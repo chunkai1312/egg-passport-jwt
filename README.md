@@ -51,6 +51,53 @@ exports.passportJwt = {
 
 see [passport-jwt](https://github.com/themikenicholson/passport-jwt) for more detail.
 
+## Example
+
+### Authenticate requests
+
+Use `app.passport.authenticate()` specifying `'jwt'` as the strategy.
+
+```js
+// app/router.js
+module.exports = app => {
+  const { router, controller } = app;
+  const jwt = app.passport.authenticate('jwt', { session: false, successReturnToOrRedirect: null });
+
+  router.get('/', controller.home.index);
+  router.get('/protected', jwt, controller.home.index);
+};
+```
+
+### Include the JWT in requests
+
+The method of including a JWT in a request depends entirely on the extractor
+function you choose. For example, if you use the `fromAuthHeaderAsBearerToken`
+extractor (default), you would include an `Authorization` header in your request with the
+scheme set to `bearer`. e.g.
+
+    Authorization: bearer JSON_WEB_TOKEN_STRING...
+
+### Verify and store user
+
+Use `app.passport.verify(async (ctx, user) => {})` hook:
+
+```js
+// app.js
+module.exports = app => {
+  app.passport.verify(async (ctx, user) => {
+    // check user
+    assert(user.provider, 'user.provider should exists');
+    assert(user.payload, 'user.payload should exists');
+
+    // find user from database
+    const existsUser = await ctx.model.User.findOne({ id: user.payload.sub });
+    if (existsUser) return existsUser;
+
+    // or you could create a new user
+  });
+};
+```
+
 ## Questions & Suggestions
 
 Please open an issue [here](https://github.com/chunkai1312/egg-passport-jwt/issues).
