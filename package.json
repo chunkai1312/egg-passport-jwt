@@ -1,6 +1,6 @@
 {
   "name": "egg-passport-jwt",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "jwt passport plugin for egg",
   "eggPlugin": {
     "name": "passportJwt",
@@ -46,7 +46,8 @@
   },
   "files": [
     "config",
-    "app.js"
+    "app.js",
+    "index.d.ts"
   ],
   "ci": {
     "version": "8, 9"
